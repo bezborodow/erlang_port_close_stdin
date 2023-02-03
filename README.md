@@ -23,10 +23,6 @@ Erlang:
  * https://www.erlang.org/doc/man/erlang.html#open_port-2
  * https://www.erlang.org/doc/man/erlang.html#port_close-1
 
-Built-in Functions (BIFs)
-
- * https://erlang.org/pipermail/erlang-questions/2009-October/046899.html
-
 Other:
 
  * https://www.erlang.org/faq/how_do_i.html
@@ -45,3 +41,16 @@ First encounter:
 Other solutions:
 
  * https://github.com/jayjun/rambo
+
+## Implementation
+
+
+Built-in Functions (BIFs)
+
+ * https://erlang.org/pipermail/erlang-questions/2009-October/046899.html
+ * https://erlang.org/pipermail/erlang-questions/2008-March/033441.html
+
+Source:
+
+ * https://github.com/erlang/otp/blob/34d362faf2a6272280b52585a5570a04d7fd63e4/erts/emulator/beam/erl_bif_port.c#L374
+ * https://github.com/erlang/otp/blob/73200aaba2a77c1caed7a218a4eb67b83d494ceb/erts/emulator/beam/bif.tab
