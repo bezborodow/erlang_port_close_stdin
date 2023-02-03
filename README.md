@@ -52,5 +52,5 @@ Built-in Functions (BIFs)
 
 Source:
 
- * https://github.com/erlang/otp/blob/34d362faf2a6272280b52585a5570a04d7fd63e4/erts/emulator/beam/erl_bif_port.c#L374
- * https://github.com/erlang/otp/blob/73200aaba2a77c1caed7a218a4eb67b83d494ceb/erts/emulator/beam/bif.tab
+ * https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_bif_port.c#L374
+ * https://github.com/erlang/otp/blob/master/erts/emulator/beam/bif.tab
