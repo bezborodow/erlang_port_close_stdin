@@ -23,6 +23,10 @@ Erlang:
  * https://www.erlang.org/doc/man/erlang.html#open_port-2
  * https://www.erlang.org/doc/man/erlang.html#port_close-1
 
+Built-in Functions (BIFs)
+
+ * https://erlang.org/pipermail/erlang-questions/2009-October/046899.html
+
 Other:
 
  * https://www.erlang.org/faq/how_do_i.html
