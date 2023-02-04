@@ -1,6 +1,8 @@
-# `port_close_stdin`
+# Send EOF to Port
 
 **Under development.**
+
+## Problem Statement
 
 Limitation of port closing stdin:
 
@@ -74,3 +76,9 @@ Ports:
 
  * https://www.erlang.org/doc/reference_manual/ports.html
  * https://www.erlang.org/doc/man/erlang.html#port_control-3
+
+## Solution
+
+### Possibile Solution 1
+
+Implement a control to be called from `port_control/3` in the approproate driver to close the write file descriptor, which will signal EOF.
