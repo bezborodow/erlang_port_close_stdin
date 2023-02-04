@@ -16,6 +16,11 @@ Limitation of port closing stdin:
  * https://stackoverflow.com/questions/74833431/use-an-os-process-like-a-bash-pipe-send-it-stdin-and-get-its-stdout
  * https://elixirforum.com/t/rambo-run-your-command-send-eof-get-output/25052/7
  * https://www.erlang.org/bugs/erl-128 (nofix)
+
+Hacks:
+
+ * https://github.com/mattsta/erlang-stdinout-pool#why-is-this-special
+ * https://github.com/saleyn/erlexec
  
 ## Research
  
