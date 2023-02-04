@@ -69,4 +69,6 @@ erts/emulator/sys/unix/sys_drivers.c:286:struct erl_drv_entry vanilla_driver_ent
 erts/emulator/sys/unix/sys_drivers.c:313:struct erl_drv_entry forker_driver_entry = {
 ```
 
+Ports:
 
+ * https://www.erlang.org/doc/man/erlang.html#port_control-3
