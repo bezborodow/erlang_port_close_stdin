@@ -86,6 +86,10 @@ Ports:
  * https://www.erlang.org/doc/reference_manual/ports.html
  * https://www.erlang.org/doc/man/erlang.html#port_control-3
 
+UNIX:
+
+ * https://man7.org/linux/man-pages/man3/exec.3.html
+
 ## Solution
 
 ### Possibile Solution 1
