@@ -8,6 +8,10 @@ Limitation of port closing stdin:
 
  * https://groups.google.com/g/erlang-programming/c/s6BIzP7I1bw
  * https://erlang.org/pipermail/erlang-questions/2013-July/074916.html
+   * http://erlang.org/pipermail/erlang-questions/2010-November/054330.html
+   * http://erlang.org/pipermail/erlang-questions/2010-October/053944.html
+   * http://erlang.org/pipermail/erlang-questions/2009-March/042123.html
+   * http://stackoverflow.com/questions/8792376/erlang-ports-interfacing-with-a-wc-like-program
  * https://gist.github.com/timruffles/77e9b69cdecdd7b3ef08
  * https://stackoverflow.com/questions/74833431/use-an-os-process-like-a-bash-pipe-send-it-stdin-and-get-its-stdout
  * https://elixirforum.com/t/rambo-run-your-command-send-eof-get-output/25052/7
