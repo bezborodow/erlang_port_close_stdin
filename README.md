@@ -108,8 +108,14 @@ UNIX:
 
 ## Solution
 
-### Possibile Solution 1
+ * https://github.com/erlang/otp/blob/master/CONTRIBUTING.md#submitting-pull-requests
+
+### Solution 1
 
 Implement a control to be called from `port_control/3` in the appropriate driver to close the write file descriptor, which will imply EOF.
 
  * https://github.com/erlang/otp/compare/master...bezborodow:otp:port_eof
+
+### Solution 2
+
+Similar [commit to above from rinpatch](https://github.com/rinpatch/otp/commit/ce8d0750b7e441a66be065fb272727825f3bb4a9), also worth investigating. ([backup]([https://github.com/bezborodow/erlang_port_close_stdin/blob/main/ce8d0750b7e441a66be065fb272727825f3bb4a9.patch](https://raw.githubusercontent.com/bezborodow/erlang_port_close_stdin/main/ce8d0750b7e441a66be065fb272727825f3bb4a9.patch)).)
