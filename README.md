@@ -58,6 +58,7 @@ Source:
 Drivers:
 
  * https://www.erlang.org/doc/man/driver_entry.html
+ * https://www.erlang.org/doc/apps/erts/driver.html
 
 [`typedef struct erl_drv_entry`](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_driver.h#L215)
 
