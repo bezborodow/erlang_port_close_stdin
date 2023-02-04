@@ -126,5 +126,6 @@ Implement a control to be called from `port_control/3` in the appropriate driver
 ### Solution 2
 
 Another commit from rinpatch, also worth investigating.
- * Commit: https://github.com/rinpatch/otp/commit/ce8d0750b7e441a66be065fb272727825f3bb4a9)
+
+ * Commit: https://github.com/rinpatch/otp/commit/ce8d0750b7e441a66be065fb272727825f3bb4a9
  * Backup: https://raw.githubusercontent.com/bezborodow/erlang_port_close_stdin/main/ce8d0750b7e441a66be065fb272727825f3bb4a9.patch
