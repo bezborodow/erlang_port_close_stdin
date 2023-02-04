@@ -58,3 +58,14 @@ Source:
 Drivers:
 
  * https://www.erlang.org/doc/man/driver_entry.html
+
+[`typedef struct erl_drv_entry`](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_driver.h#L215)
+
+```
+erts/emulator/sys/unix/sys_drivers.c:233:struct erl_drv_entry spawn_driver_entry = {
+erts/emulator/sys/unix/sys_drivers.c:259:struct erl_drv_entry fd_driver_entry = {
+erts/emulator/sys/unix/sys_drivers.c:286:struct erl_drv_entry vanilla_driver_entry = {
+erts/emulator/sys/unix/sys_drivers.c:313:struct erl_drv_entry forker_driver_entry = {
+```
+
+
