@@ -114,6 +114,7 @@ Contributing:
  * https://github.com/erlang/otp/blob/master/HOWTO/DEVELOPMENT.md
  * https://github.com/erlang/otp/blob/master/HOWTO/TESTING.md
    * `make emulator_test ARGS="-suite driver_SUITE"`
+   * `make emulator_test ARGS="-suite port_bif_SUITE"`
 
 ### Solution 1
 
