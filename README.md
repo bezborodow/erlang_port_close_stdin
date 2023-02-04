@@ -21,7 +21,21 @@ Hacks:
 
  * https://github.com/mattsta/erlang-stdinout-pool#why-is-this-special
  * https://github.com/saleyn/erlexec
- 
+
+Workaround:
+
+ * https://erlang.org/pipermail/erlang-questions/2013-July/074937.html
+
+> And a program that waits for all of its input before producing any data is by definition not a filter.
+> 
+> There is a very very simple technique.
+> (1) Create a temporary file.
+> (2) Create a pipe, telling that pipe to write to the temporary file.
+> (3) Send your data to the pipe and close the pipe.
+> (4) Now read the temporary file.
+
+
+
 ## Research
  
 C integraton:
