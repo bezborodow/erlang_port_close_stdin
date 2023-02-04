@@ -54,3 +54,7 @@ Source:
 
  * https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_bif_port.c#L374
  * https://github.com/erlang/otp/blob/master/erts/emulator/beam/bif.tab
+
+Drivers:
+
+ * https://www.erlang.org/doc/man/driver_entry.html
