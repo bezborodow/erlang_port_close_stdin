@@ -108,4 +108,4 @@ UNIX:
 
 ### Possibile Solution 1
 
-Implement a control to be called from `port_control/3` in the approproate driver to close the write file descriptor, which will signal EOF.
+Implement a control to be called from `port_control/3` in the appropriate driver to close the write file descriptor, which will signal EOF.
