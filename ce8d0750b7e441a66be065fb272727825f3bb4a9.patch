@@ -1,0 +1,168 @@
+From ce8d0750b7e441a66be065fb272727825f3bb4a9 Mon Sep 17 00:00:00 2001
+From: rinpatch <rinpatch@sdf.org>
+Date: Sun, 23 Aug 2020 16:51:42 +0300
+Subject: [PATCH] WIP: Close stdin/stdout of a spawn/spawn_executable port
+
+Non-final implementation using port_control, only for unix and with no tests.
+
+Also renamed ERTS_SPAWN_DRV_CONTROL_MAGIC_NUMBER to ERTS_SPAWN_DRV_CONTROL_FORKER_SIGNAL
+and moved to unix-specific, since windows spawn driver doesn't have
+control
+---
+ erts/emulator/beam/sys.h             |  6 +-
+ erts/emulator/sys/unix/sys_drivers.c | 95 ++++++++++++++++++----------
+ 2 files changed, 65 insertions(+), 36 deletions(-)
+
+diff --git a/erts/emulator/beam/sys.h b/erts/emulator/beam/sys.h
+index 3b9b87dd3386..93ca468e695c 100644
+--- a/erts/emulator/beam/sys.h
++++ b/erts/emulator/beam/sys.h
+@@ -1375,7 +1375,11 @@ erts_raw_env_next_char(byte *p, int encoding)
+  */
+ #define ERTS_TTYSL_DRV_CONTROL_MAGIC_NUMBER  0x018b0900U
+ #define ERTS_INET_DRV_CONTROL_MAGIC_NUMBER   0x03f1a300U
+-#define ERTS_SPAWN_DRV_CONTROL_MAGIC_NUMBER  0x04c76a00U
+ #define ERTS_FORKER_DRV_CONTROL_MAGIC_NUMBER 0x050a7800U
+ 
++/* Commands for the spawn driver */
++
++#define ERTS_SPAWN_DRV_CONTROL_CLOSE_INPUT 0
++#define ERTS_SPAWN_DRV_CONTROL_CLOSE_OUTPUT 1
++
+ #endif
+diff --git a/erts/emulator/sys/unix/sys_drivers.c b/erts/emulator/sys/unix/sys_drivers.c
+index e3f9a8073e4f..3fa8c02d2546 100644
+--- a/erts/emulator/sys/unix/sys_drivers.c
++++ b/erts/emulator/sys/unix/sys_drivers.c
+@@ -168,6 +168,8 @@ typedef struct driver_data {
+ 
+ #define ERTS_SYS_READ_BUF_SZ (64*1024)
+ 
++#define ERTS_SPAWN_DRV_CONTROL_FORKER_SIGNAL 0x04c76a00U
++
+ /* I. Initialization */
+ 
+ void
+@@ -763,28 +765,72 @@ static ErlDrvData spawn_start(ErlDrvPort port_num, char* name,
+ #undef CMD_LINE_PREFIX_STR_SZ
+ }
+ 
++static void clear_fd_data(ErtsSysFdData *fdd)
++{
++    if (fdd->sz > 0) {
++	erts_free(ERTS_ALC_T_FD_ENTRY_BUF, (void *) fdd->buf);
++	ASSERT(erts_atomic_read_nob(&sys_misc_mem_sz) >= fdd->sz);
++	erts_atomic_add_nob(&sys_misc_mem_sz, -1*fdd->sz);
++    }
++    fdd->buf = NULL;
++    fdd->sz = 0;
++    fdd->remain = 0;
++    fdd->cpos = NULL;
++    fdd->psz = 0;
++}
++
++static void nbio_stop_fd(ErlDrvPort prt, ErtsSysFdData *fdd, int use)
++{
++    clear_fd_data(fdd);
++    SET_BLOCKING(abs(fdd->fd));
++}
++
+ static ErlDrvSSizeT spawn_control(ErlDrvData e, unsigned int cmd, char *buf,
+                                   ErlDrvSizeT len, char **rbuf, ErlDrvSizeT rlen)
+ {
+     ErtsSysDriverData *dd = (ErtsSysDriverData*)e;
+-    ErtsSysForkerProto *proto = (ErtsSysForkerProto *)buf;
+-
+-    if (cmd != ERTS_SPAWN_DRV_CONTROL_MAGIC_NUMBER)
+-        return -1;
++    ErtsSysForkerProto *proto;
++
++    switch(cmd) {
++      case ERTS_SPAWN_DRV_CONTROL_CLOSE_INPUT:
++		if(dd->ifd) {
++			driver_select(dd->port_num, abs(dd->ifd->fd), ERL_DRV_READ | ERL_DRV_USE, 0);
++			nbio_stop_fd(dd->port_num, dd->ifd, 1);
++			erts_atomic_add_nob(&sys_misc_mem_sz, -sizeof(ErtsSysFdData));
++			dd->ifd = NULL;
++			return 0;
++        } else {
++           return -1;
++        }
++      case ERTS_SPAWN_DRV_CONTROL_CLOSE_OUTPUT:
++		if(dd->ofd) {
++			driver_select(dd->port_num, abs(dd->ofd->fd), ERL_DRV_READ | ERL_DRV_USE, 0);
++			nbio_stop_fd(dd->port_num, dd->ofd, 1);
++			erts_atomic_add_nob(&sys_misc_mem_sz, -sizeof(ErtsSysFdData));
++			dd->ofd = NULL;
++			return 0;
++        } else {
++           return -1;
++        }
++     case ERTS_SPAWN_DRV_CONTROL_FORKER_SIGNAL:;
++	    proto = (ErtsSysForkerProto *)buf;
+ 
+-    ASSERT(len == sizeof(*proto));
+-    ASSERT(proto->action == ErtsSysForkerProtoAction_SigChld);
++	    ASSERT(len == sizeof(*proto));
++	    ASSERT(proto->action == ErtsSysForkerProtoAction_SigChld);
+ 
+-    dd->status = proto->u.sigchld.error_number;
+-    dd->alive = -1;
++	    dd->status = proto->u.sigchld.error_number;
++	    dd->alive = -1;
+ 
+-    if (dd->ifd)
+-        driver_select(dd->port_num, abs(dd->ifd->fd), ERL_DRV_READ | ERL_DRV_USE, 1);
++	    if (dd->ifd)
++	        driver_select(dd->port_num, abs(dd->ifd->fd), ERL_DRV_READ | ERL_DRV_USE, 1);
+ 
+-    if (dd->ofd)
+-        driver_select(dd->port_num, abs(dd->ofd->fd), ERL_DRV_WRITE | ERL_DRV_USE, 1);
++	    if (dd->ofd)
++	        driver_select(dd->port_num, abs(dd->ofd->fd), ERL_DRV_WRITE | ERL_DRV_USE, 1);
+ 
+-    return 0;
++	    return 0;
++      default:
++        return -1;
++    }
+ }
+ 
+ #define FD_DEF_HEIGHT 24
+@@ -1010,27 +1056,6 @@ static ErlDrvData fd_start(ErlDrvPort port_num, char* name,
+                                           opts->read_write, 0, -1,
+                                           !non_blocking, opts);
+ }
+-
+-static void clear_fd_data(ErtsSysFdData *fdd)
+-{
+-    if (fdd->sz > 0) {
+-	erts_free(ERTS_ALC_T_FD_ENTRY_BUF, (void *) fdd->buf);
+-	ASSERT(erts_atomic_read_nob(&sys_misc_mem_sz) >= fdd->sz);
+-	erts_atomic_add_nob(&sys_misc_mem_sz, -1*fdd->sz);
+-    }
+-    fdd->buf = NULL;
+-    fdd->sz = 0;
+-    fdd->remain = 0;
+-    fdd->cpos = NULL;
+-    fdd->psz = 0;
+-}
+-
+-static void nbio_stop_fd(ErlDrvPort prt, ErtsSysFdData *fdd, int use)
+-{
+-    clear_fd_data(fdd);
+-    SET_BLOCKING(abs(fdd->fd));
+-}
+-
+ static void fd_stop(ErlDrvData ev)  /* Does not close the fds */
+ {
+     ErtsSysDriverData* dd = (ErtsSysDriverData*)ev;
+@@ -1755,7 +1780,7 @@ static void forker_sigchld(Eterm port_id, int error)
+        already used by the spawn_driver, we use control instead.
+        Note that when using erl_drv_port_control it is an asynchronous
+        control. */
+-    erl_drv_port_control(port_id, ERTS_SPAWN_DRV_CONTROL_MAGIC_NUMBER,
++    erl_drv_port_control(port_id, ERTS_SPAWN_DRV_CONTROL_FORKER_SIGNAL,
+                          (char*)proto, sizeof(*proto));
+ }
+ 
