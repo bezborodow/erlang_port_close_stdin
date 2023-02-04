@@ -1,4 +1,4 @@
-# Send EOF to Port
+# Erlang Ports: Close the Write File Descriptor (Implying EOF)
 
 **Under development.**
 
@@ -110,6 +110,6 @@ UNIX:
 
 ### Possibile Solution 1
 
-Implement a control to be called from `port_control/3` in the appropriate driver to close the write file descriptor, which will signal EOF.
+Implement a control to be called from `port_control/3` in the appropriate driver to close the write file descriptor, which will imply EOF.
 
  * https://github.com/erlang/otp/compare/master...bezborodow:otp:port_eof
