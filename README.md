@@ -108,9 +108,12 @@ UNIX:
 
 ## Solution
 
+Contributing:
+
  * https://github.com/erlang/otp/blob/master/CONTRIBUTING.md#submitting-pull-requests
  * https://github.com/erlang/otp/blob/master/HOWTO/DEVELOPMENT.md
  * https://github.com/erlang/otp/blob/master/HOWTO/TESTING.md
+   * `make emulator_test ARGS="-suite driver_SUITE"`
 
 ### Solution 1
 
