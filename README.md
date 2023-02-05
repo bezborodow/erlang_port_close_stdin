@@ -23,6 +23,7 @@ Hacks:
 
  * https://github.com/mattsta/erlang-stdinout-pool#why-is-this-special
  * https://github.com/saleyn/erlexec
+ * https://github.com/petrkozorezov/estdinout https://hex.pm/packages/estdinout
 
 Workaround:
 
