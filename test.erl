@@ -4,5 +4,5 @@
 wc(InputText) ->
     P = open_port({spawn, "wc"}, [stream, use_stdio]),
     P ! {self(), {command, InputText}},
-    erlang:port_control(P, 16#0112c000, []),
+    port_control(P, 16#0112c000, []),
     receive {P, X} -> X end.
