@@ -1,29 +1,31 @@
 # Erlang Ports: Close the Write File Descriptor (Implying EOF)
 
+Issue: **[ERL-128: Close stdin of a port](https://www.erlang.org/bugs/erl-128)** *#4326*
+
 **Under development.**
 
  * See branch **[bezborodow:otp:port_eof](https://github.com/erlang/otp/compare/master...bezborodow:otp:port_eof)**.
 
 ## Problem Statement
 
-Limitation of port closing stdin:
+Users having this issue:
 
- * https://groups.google.com/g/erlang-programming/c/s6BIzP7I1bw
- * https://erlang.org/pipermail/erlang-questions/2013-July/074916.html
-   * http://erlang.org/pipermail/erlang-questions/2010-November/054330.html
-   * http://erlang.org/pipermail/erlang-questions/2010-October/053944.html
-   * http://erlang.org/pipermail/erlang-questions/2009-March/042123.html
-   * http://stackoverflow.com/questions/8792376/erlang-ports-interfacing-with-a-wc-like-program
- * https://gist.github.com/timruffles/77e9b69cdecdd7b3ef08
- * https://stackoverflow.com/questions/74833431/use-an-os-process-like-a-bash-pipe-send-it-stdin-and-get-its-stdout
- * https://elixirforum.com/t/rambo-run-your-command-send-eof-get-output/25052/7
- * https://www.erlang.org/bugs/erl-128 (nofix)
+  * [Issues with stdin on ports](https://erlang.org/pipermail/erlang-questions/2013-July/074916.html)
+  * [EOF to external program](http://erlang.org/pipermail/erlang-questions/2010-November/054330.html)
+  * [struggling with port_command()](http://erlang.org/pipermail/erlang-questions/2010-October/053944.html)
+  * [open_pipe({spawn, "cat"}) --- how to close stdin of cat?](http://erlang.org/pipermail/erlang-questions/2009-March/042123.html)
+  * [Erlang Ports: Interfacing with a "wc"-like program?](https://stackoverflow.com/questions/8792376/erlang-ports-interfacing-with-a-wc-like-program)
+  * [erlang ports bewlider me](https://gist.github.com/timruffles/77e9b69cdecdd7b3ef08)
+  * [Use an OS process like a bash pipe: Send it STDIN and get its STDOUT](https://stackoverflow.com/questions/74833431/use-an-os-process-like-a-bash-pipe-send-it-stdin-and-get-its-stdout)
+  * [Rambo - Run your command. Send EOF. Get output](https://elixirforum.com/t/rambo-run-your-command-send-eof-get-output/25052)
 
-Hacks:
+Users solving this issue with middleware:
 
- * https://github.com/mattsta/erlang-stdinout-pool#why-is-this-special
- * https://github.com/saleyn/erlexec
- * https://github.com/petrkozorezov/estdinout https://hex.pm/packages/estdinout
+  * [mattsta/erlang-stdinout-pool](https://github.com/mattsta/erlang-stdinout-pool#why-is-this-special)
+  * [saleyn/erlexec](https://github.com/saleyn/erlexec#communicating-with-an-os-process-via-stdin-and-sending-end-of-file)
+  * [petrkozorezov/estdinout](https://github.com/petrkozorezov/estdinout#estdinout)
+  * [jayjun/rambo](https://github.com/jayjun/rambo#why)
+  * [alco/porcelain](https://github.com/alco/porcelain#overview)
 
 Workaround:
 
@@ -36,8 +38,6 @@ Workaround:
 > (2) Create a pipe, telling that pipe to write to the temporary file.
 > (3) Send your data to the pipe and close the pipe.
 > (4) Now read the temporary file.
-
-
 
 ## Research
  
@@ -122,6 +122,7 @@ Contributing:
 Implement a control to be called from `port_control/3` in the appropriate driver to close the write file descriptor, which will imply EOF.
 
  * Branch: https://github.com/erlang/otp/compare/master...bezborodow:otp:port_eof
+ * Pull request: https://github.com/erlang/otp/pull/6824
  * Example usage: https://github.com/bezborodow/erlang_port_close_stdin/blob/main/test.erl
 
 ### Solution 2
